@@ -45,7 +45,7 @@ Widget build(BuildContext context) {
           //設定前頁共享的ColorModel
           value.setColor("#FFB7DD");
           //返回上一頁
-          context.pop("/");
+          context.go("/");
         },
         child: const Text('返回上一頁'))
         )
