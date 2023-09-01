@@ -70,6 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
+            heroTag: "counter",
             onPressed: isOver ? null: _incrementCounter,
             child: const Icon(Icons.add)
             )
@@ -77,6 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
           const SizedBox(width: 20)
           ,
           FloatingActionButton(
+            heroTag: "reset",
             onPressed: isOver ? reset : null,
             child: const Icon(Icons.refresh)
             )
@@ -88,13 +90,13 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: () {
               //下一頁須知道共享資料，故啟動頁面需進行消費
               Navigator.push(context,MaterialPageRoute(builder:(context) {
-                return Consumer(builder:(context, value, child) => const PageA());
+                return const PageA();
               },));
             },
             child: const Text('前往下一頁',)
             )
           ]
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ), 
     );
   }
 }
