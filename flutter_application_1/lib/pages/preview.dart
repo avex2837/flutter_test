@@ -22,21 +22,26 @@ MaterialStateProperty<Color> createTextBtnBgColor() {
 
 @override
 Widget build(BuildContext context) {
+  //印出當前觸發build的Widget資訊
   print(context.toString());
   //取出前一頁帶入的資訊
   Map<String,dynamic> qparams = GoRouterState.of(context).uri.queryParameters;
   //取出前頁帶來的數量，決定列表的數量
-  String query = qparams["query"];
+  String query = qparams.containsKey("query") ? qparams["query"] : "";
   return Scaffold(
     body: Center(
+      //建立列表widget
       child:ListView.separated(
+        //指定簡單的標題容器作為
         itemBuilder:(BuildContext cotext,int index ){
           //index + 前頁帶過來的字串，做為顯示標題
           String displayValue = "$index $query";
           //回傳標題資訊
           return ListTile(title: Text(displayValue));
         }, 
+        //定義每個item的分隔器
         separatorBuilder:(context, index) => const Divider(color: Colors.blue), 
+        //指定數量100筆
         itemCount: 100)),
     floatingActionButton: Consumer<DataModel>(
       builder: (context, value, child) => TextButton (
