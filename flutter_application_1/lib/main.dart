@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/beans/data.dart';
 import 'package:flutter_application_1/router/routers.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 
 void main() {
-  runApp(ChangeNotifierProvider(
+
+ runApp(ChangeNotifierProvider(
     create: (context) =>DataModel(),
     child: const MyApp()));
 }

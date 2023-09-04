@@ -35,9 +35,31 @@ Widget build(BuildContext context) {
         //指定簡單的標題容器作為
         itemBuilder:(BuildContext cotext,int index ){
           //index + 前頁帶過來的字串，做為顯示標題
-          String displayValue = "$index $query";
+          int num = index+1;
           //回傳標題資訊
-          return ListTile(title: Text(displayValue));
+          return ListTile(
+            //項目圖片
+            leading: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.numbers),
+                Text(
+                  "$num",
+                  style: const TextStyle(fontSize: 20),)
+              ],),
+            // //項目背景
+            // tileColor: index%2==0?Colors.amber:Colors.purple,
+            //項目文字主標題
+            title: const Text(
+              "我是標題",
+              style:TextStyle(
+                color: Colors.blue)),
+            //項目文字次標題
+            subtitle: Text(
+              query,
+              style:const TextStyle(
+                color: Colors.red)),
+          );
         }, 
         //定義每個item的分隔器
         separatorBuilder:(context, index) => const Divider(color: Colors.blue), 
