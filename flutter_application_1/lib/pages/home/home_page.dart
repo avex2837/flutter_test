@@ -90,8 +90,8 @@ class _MyHomePageState extends State<MyHomePage> {
             style: ButtonStyle(backgroundColor: createTextBtnBgColor()),
             onPressed: () {
               //下一頁須知道共享資料，故啟動頁面需進行消費
-              // context.goNamed("preview",queryParameters: {"query":"flucter 好麻煩"});
-              context.go("/preview?query=flucter 好麻煩");
+              context.goNamed("preview",queryParameters: {"query":"flucter 好麻煩"});
+              // context.go("/home/preview?query=flucter 好麻煩");
             },
             child: const Text('前往下一頁',)
             )
