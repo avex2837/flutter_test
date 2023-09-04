@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/beans/data.dart';
 import 'package:flutter_application_1/router/routers.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 
 void main() {
-
- runApp(ChangeNotifierProvider(
+  //建立URL策略，用以移除頁出現http://localhost:5654/#/的#字hash
+  setUrlStrategy(PathUrlStrategy());
+  //啟動
+  runApp(ChangeNotifierProvider(
     create: (context) =>DataModel(),
     child: const MyApp()));
 }

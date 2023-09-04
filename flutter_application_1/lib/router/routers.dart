@@ -7,13 +7,13 @@ import 'package:go_router/go_router.dart';
 final router = GoRouter(
   errorBuilder: (context, state) => const ErrorScreenPage(),
   //定義起點
-  initialLocation: "/home",
+  initialLocation: "/",
   routes: [
     GoRoute(
       //定義名稱，可使用goNamed的方式進行導向
       name: "home",
       //定義路徑，可使用go指定路徑方式進行導向
-      path: '/home',
+      path: '/',
       builder: (context, state) => const MyHomePage(title: "首頁"),
       routes: [
         GoRoute(
