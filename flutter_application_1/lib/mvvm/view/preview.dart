@@ -11,8 +11,8 @@ class PreviewPage extends StatelessWidget{
   Widget build(BuildContext context) {
     //印出當前觸發build的Widget資訊
     print(context.toString());
-        //取出共享ViewModel
-    ViewModel viewModel = Provider.of<ViewModel>(context);
+    //取出共享ViewModel，並設定監聽FALSE，避免使用MODEL重新觸發BUILD
+    ViewModel viewModel = Provider.of<ViewModel>(context,listen: false);
     //取出前一頁帶入的資訊
     Map<String,dynamic> qparams = GoRouterState.of(context).uri.queryParameters;
     //取出前頁帶來的數量，決定列表的數量

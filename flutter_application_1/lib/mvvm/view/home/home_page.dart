@@ -34,7 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     print(context.toString());
        //取出共享viewModel
-    ViewModel viewModel = Provider.of<ViewModel>(context);
+    ViewModel viewModel = Provider.of<ViewModel>(context,listen: false);
     //是否超過次數
     bool isOver = viewModel.getCount()>4;
     return Scaffold(
@@ -52,10 +52,11 @@ class _MyHomePageState extends State<MyHomePage> {
               //顏色會於頁面跳轉返回後改變
               style: TextStyle(fontSize: 30,color:value.getColor()),
             )),
+            Consumer<ViewModel>(builder:(context, value, child) => 
             Text(
-              viewModel.getCount().toString(),
+              value.getCount().toString(),
               style: Theme.of(context).textTheme.headlineMedium,
-            ),
+            ),),
           ],
         ),
       ),

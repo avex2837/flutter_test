@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/mvvm/model/data.dart';
 import 'package:flutter_application_1/mvvm/viewModel/prew_view_view_model.dart';
 import 'package:flutter_application_1/router/routers.dart';
 import 'package:provider/provider.dart';
