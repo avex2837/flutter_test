@@ -14,25 +14,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  //計數參數
-  int _counter = 0;
-
-  //重新設定
-  void reset() {
-    setState(() {
-       _counter=0;
-    });
-  }
-
-  //點擊按鈕計數
-  void _incrementCounter() {
-    setState(() {
-        if(_counter<5){
-          _counter++;
-        }
-    });
-  }
-
+  
   //建立按鈕三態
   MaterialStateProperty<Color> createTextBtnBgColor() {
     return MaterialStateProperty.resolveWith((states) {
@@ -46,11 +28,15 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }        
 
+ 
+
   @override
   Widget build(BuildContext context) {
     print(context.toString());
+       //取出共享viewModel
+    ViewModel viewModel = Provider.of<ViewModel>(context);
     //是否超過次數
-    bool isOver = _counter>4;
+    bool isOver = viewModel.getCount()>4;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: isOver?Colors.red:Theme.of(context).colorScheme.inversePrimary,
@@ -67,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
               style: TextStyle(fontSize: 30,color:value.getColor()),
             )),
             Text(
-              '$_counter',
+              viewModel.getCount().toString(),
               style: Theme.of(context).textTheme.headlineMedium,
             ),
           ],
@@ -78,7 +64,9 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           FloatingActionButton(
             heroTag: "counter",
-            onPressed: isOver ? null: _incrementCounter,
+            onPressed: isOver ? null: (){
+              viewModel.increaseCount();
+            },
             child: const Icon(Icons.add)
             )
             ,
@@ -86,7 +74,9 @@ class _MyHomePageState extends State<MyHomePage> {
           ,
           FloatingActionButton(
             heroTag: "reset",
-            onPressed: isOver ? reset : null,
+            onPressed: isOver ? (){
+              viewModel.resetCount();
+            } : null,
             child: const Icon(Icons.refresh)
             )
             ,

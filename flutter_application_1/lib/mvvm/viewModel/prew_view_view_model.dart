@@ -1,37 +1,36 @@
-import 'package:flutter_application_1/mvvm/viewModel/basic_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/extensions/utils.dart';
+import 'package:flutter_application_1/mvvm/model/data.dart';
 ///P
-class ViewModel extends PageViewModel{
-   //顏色
-  String color = "#509cf6";
-
-  ViewModel(super.context);
-
-  @override
-  onCreate() {
-    print("ViewModel onCreate ");
-    
-  }
-
-  @override
-  onDispose() {
-    print("ViewModel onDispose");
-
-  }
-
+class ViewModel extends ChangeNotifier{
+  final _dataModel = DataModel();
   //設定顏色
   void setColor(String value)
   {
-    color = value;
+    _dataModel.setColor(value);
     notifyListeners();
   }
 
   //取得Color
   Color getColor()
   {
-    return color.toColor();
+    return _dataModel.getColor();
   }
 
+  //計數
+  void increaseCount(){
+      _dataModel.increaseCount();
+      notifyListeners();
+  }
+
+  int getCount()
+  {
+    return _dataModel.getCount(); 
+  }
+
+  //重新設定
+  void resetCount() {
+     _dataModel.resetCount();
+     notifyListeners();
+  }
 
 }

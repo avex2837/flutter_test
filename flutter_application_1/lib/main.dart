@@ -10,7 +10,7 @@ void main() {
   setUrlStrategy(PathUrlStrategy());
   //啟動
   runApp(ChangeNotifierProvider(
-    create: (context) =>ViewModel(context),
+    create: (context) =>ViewModel(),
     child: const MyApp()));
 }
 
