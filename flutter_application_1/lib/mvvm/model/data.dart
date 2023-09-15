@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/extensions/utils.dart';
 
-class DataModel with ChangeNotifier{
+class DataModel{
   //顏色
   String color = "#509cf6";
 
@@ -10,7 +10,6 @@ class DataModel with ChangeNotifier{
   void setColor(String value)
   {
     color = value;
-    notifyListeners();
   }
 
   //取得Color

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/pages/error_screen.dart';
-import 'package:flutter_application_1/pages/home/home_page.dart';
-import 'package:flutter_application_1/pages/preview.dart';
+import 'package:flutter_application_1/mvvm/view/error_screen.dart';
+import 'package:flutter_application_1/mvvm/view/home/home_page.dart';
+import 'package:flutter_application_1/mvvm/view/preview.dart';
 import 'package:go_router/go_router.dart';
 //建立全域路由器，定義頁面導向邏輯
 final router = GoRouter(

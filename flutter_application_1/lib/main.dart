@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/beans/data.dart';
+import 'package:flutter_application_1/mvvm/viewModel/prew_view_view_model.dart';
 import 'package:flutter_application_1/router/routers.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
@@ -10,7 +10,7 @@ void main() {
   setUrlStrategy(PathUrlStrategy());
   //啟動
   runApp(ChangeNotifierProvider(
-    create: (context) =>DataModel(),
+    create: (context) =>ViewModel(context),
     child: const MyApp()));
 }
 

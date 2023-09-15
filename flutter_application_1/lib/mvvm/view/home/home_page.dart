@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/extensions/utils.dart';
-import 'package:flutter_application_1/beans/data.dart';
+import 'package:flutter_application_1/mvvm/viewModel/prew_view_view_model.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class MyHomePage extends StatefulWidget {
   final String title;
   const MyHomePage({super.key, required this.title});
+  
+  
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State createState()=>_MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
   //計數參數
   int _counter = 0;
+
+  //重新設定
   void reset() {
     setState(() {
        _counter=0;
@@ -28,6 +32,7 @@ class _MyHomePageState extends State<MyHomePage> {
         }
     });
   }
+
   //建立按鈕三態
   MaterialStateProperty<Color> createTextBtnBgColor() {
     return MaterialStateProperty.resolveWith((states) {
@@ -36,10 +41,11 @@ class _MyHomePageState extends State<MyHomePage> {
       } 
       else if (states.contains(MaterialState.disabled)) {
         return "#509cf6".toColor();
-    }
-    return "#FF208FF9".toColor(); 
-  });
-}         
+      }
+      return "#FF208FF9".toColor(); 
+    });
+  }        
+
   @override
   Widget build(BuildContext context) {
     print(context.toString());
@@ -54,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Consumer<DataModel>(builder: (context, value, child) => 
+            Consumer<ViewModel>(builder: (context, value, child) => 
             Text(
               'You have pushed the button this many times:',
               //顏色會於頁面跳轉返回後改變
@@ -99,4 +105,6 @@ class _MyHomePageState extends State<MyHomePage> {
       ), 
     );
   }
+  
+ 
 }
