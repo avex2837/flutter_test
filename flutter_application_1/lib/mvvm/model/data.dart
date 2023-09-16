@@ -1,7 +1,6 @@
-//顏色物件
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/extensions/utils.dart';
-
+///頁面資料
 class DataModel{
   //顏色
   String color = "#509cf6";
@@ -25,9 +24,10 @@ class DataModel{
   }
 
   //重新設定
-  void resetCount() {
-     _count=0;
-  }
-
+  void resetCount()=>_count=0;
+  //計數
   int getCount()=>_count;
+
+  //是否超過
+  bool isOver()=> _count>4;
 }

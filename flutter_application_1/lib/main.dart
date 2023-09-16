@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/mvvm/model/data.dart';
-import 'package:flutter_application_1/mvvm/viewModel/prew_view_view_model.dart';
+import 'package:flutter_application_1/https/http_service.dart';
+import 'package:flutter_application_1/mvvm/view_model/prew_view_view_model.dart';
 import 'package:flutter_application_1/router/routers.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
@@ -9,6 +9,8 @@ import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 void main() {
   //建立URL策略，用以移除頁出現http://localhost:5654/#/的#字hash
   setUrlStrategy(PathUrlStrategy());
+  HttpService service = HttpService.instance;
+  service.initDio();
   //啟動
   runApp(ChangeNotifierProvider(
     create: (context) =>ViewModel(),
@@ -21,7 +23,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //印出當前觸發build的Widget資訊
-    print(context.toString());
+    debugPrint(context.toString());
     return MaterialApp.router(
       title: 'Flutter Demo',
       theme: ThemeData(
