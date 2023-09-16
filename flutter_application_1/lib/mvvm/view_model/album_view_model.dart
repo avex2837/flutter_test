@@ -4,44 +4,11 @@ import 'package:flutter_application_1/https/api/basic/base_api.dart';
 import 'package:flutter_application_1/https/api/beans/album_bean.dart';
 import 'package:flutter_application_1/https/api/request/album_request';
 import 'package:flutter_application_1/https/api/response/api_response.dart';
-import 'package:flutter_application_1/mvvm/model/data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 ///ViewModel
-class ViewModel extends ChangeNotifier {
-  //資料暫存區
-  final _dataModel = DataModel();
+class AlbumViewModel extends ChangeNotifier {
   ApiResponse _apiResponse = ApiResponse.initial('Empty data');
-  //設定顏色
-  void setColor(String value) {
-    _dataModel.setColor(value);
-    notifyListeners();
-  }
-
-  //取得Color
-  Color getColor() {
-    return _dataModel.getColor();
-  }
-
-  //計數
-  void increaseCount() {
-    _dataModel.increaseCount();
-    notifyListeners();
-  }
-
-  int getCount() {
-    return _dataModel.getCount();
-  }
-
-  //重新設定
-  void resetCount() {
-    _dataModel.resetCount();
-    notifyListeners();
-  }
-
-  //是否超過
-  bool isOver() => _dataModel.isOver();
-
 
   //取得此次請求結果
   ApiResponse get response {
@@ -73,14 +40,12 @@ class ViewModel extends ChangeNotifier {
   //取的相簿
   fetchAlbumData(String title) {
     BaseApi apiRequest = FetchAlbumRequest(title);
-    _sendWithCallBack(apiRequest,successCallBack: (data) async {
-      final prefs = await SharedPreferences.getInstance();
-      //將此次取得資料寫入Preference
-      prefs.setString(Constants.SHARE_PREFERENCES_KEY_ALBUM, value)
+    _sendWithCallBack(apiRequest, successCallBack: (data) async {
       final album = Album.fromJson(data);
       //將此次取得成功的資料寫入Preference
       final preferences = await SharedPreferences.getInstance();
-      preferences.setString(Constants.SHARE_PREFERENCES_KEY_ALBUM, data.toString());
+      preferences.setString(
+          Constants.SHARE_PREFERENCES_KEY_ALBUM, data.toString());
       _apiResponse = ApiResponse.completed(album);
       notifyListeners();
     }, errorCallBack: (e) {
@@ -93,7 +58,6 @@ class ViewModel extends ChangeNotifier {
   createAlbumData(String title) {
     BaseApi apiRequest = CreateAlbumRequest(title);
     _send(apiRequest);
-
   }
 
   //發送Request
@@ -114,6 +78,7 @@ class ViewModel extends ChangeNotifier {
       required Function errorCallBack}) async {
     _apiResponse = ApiResponse.loading('Create album data');
     notifyListeners();
-    apiRequest.request(successCallBack: successCallBack,errorCallBack: errorCallBack);
+    apiRequest.request(
+        successCallBack: successCallBack, errorCallBack: errorCallBack);
   }
 }

@@ -1,27 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/extensions/utils.dart';
-import 'package:flutter_application_1/mvvm/view_model/prew_view_view_model.dart';
+import 'package:flutter_application_1/mvvm/view_model/album_view_model.dart';
+import 'package:flutter_application_1/mvvm/view_model/main_view_model.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 ///預覽頁，繼承BaseViewModelWidget
-class PreviewPage extends StatelessWidget {
+class PreviewPage extends StatefulWidget {
   const PreviewPage({super.key});
+  
+  @override
+  State<StatefulWidget> createState()=>PreviewPageState();
+}
+class PreviewPageState extends State<PreviewPage>{
+  //宣告獨立的 AlbumViewModel，不取得共享AlbumViewModel，避免變動刷新
+  final AlbumViewModel albumViewModel = AlbumViewModel();
+  @override
+  void initState() {
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     //印出當前觸發build的Widget資訊
     debugPrint(context.toString());
-    //取出共享ViewModel，並設定監聽FALSE，避免使用MODEL重新觸發BUILD
-    ViewModel viewModel = Provider.of<ViewModel>(context, listen: false);
     //取出前一頁帶入的資訊
     Map<String, dynamic> qparams =
         GoRouterState.of(context).uri.queryParameters;
     //取出帶入的Query
     String query = qparams.containsKey("title") ? qparams["title"] : "";
     // 等待畫面初始化完成
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      viewModel.fetchAlbumData(query);
-    });
+    albumViewModel.fetchAlbumData(query);
+
     return Scaffold(
         body: Center(
             //建立列表widget
@@ -31,7 +40,7 @@ class PreviewPage extends StatelessWidget {
                   //index + 前頁帶過來的字串，做為顯示標題
                   int num = index + 1;
                   //回傳標題資訊
-                  return Consumer<ViewModel>(
+                  return Consumer<MainViewModel>(
                       builder: (context, value, child) => ListTile(
                             //項目圖片
                             leading: Row(
@@ -59,15 +68,17 @@ class PreviewPage extends StatelessWidget {
                     const Divider(color: Colors.blue),
                 //指定數量100筆
                 itemCount: 100)),
-        floatingActionButton: TextButton(
-            style: ButtonStyle(backgroundColor: createTextBtnBgColor()),
-            onPressed: () {
-              //設定前頁共享的ColorModel
-              viewModel.setColor("#FFB7DD");
-              //返回上一頁
-              context.goNamed("home");
-            },
-            child: const Text('返回上一頁')));
+        floatingActionButton: Consumer<MainViewModel>(
+          builder: (context, value, child) => TextButton(
+              style: ButtonStyle(backgroundColor: createTextBtnBgColor()),
+              onPressed: () {
+                //設定前頁共享的ColorModel
+                value.setColor("#FFB7DD");
+                //返回上一頁
+                context.goNamed("home");
+              },
+              child: const Text('返回上一頁')),
+        ));
   }
 
   //建立按鈕點擊事件
@@ -82,3 +93,5 @@ class PreviewPage extends StatelessWidget {
     });
   }
 }
+  
+

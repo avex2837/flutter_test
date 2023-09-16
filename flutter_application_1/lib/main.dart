@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/https/http_service.dart';
-import 'package:flutter_application_1/mvvm/view_model/prew_view_view_model.dart';
+import 'package:flutter_application_1/mvvm/view_model/album_view_model.dart';
+import 'package:flutter_application_1/mvvm/view_model/main_view_model.dart';
 import 'package:flutter_application_1/router/routers.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
-
 
 void main() {
   //建立URL策略，用以移除頁出現http://localhost:5654/#/的#字hash
@@ -12,9 +12,12 @@ void main() {
   HttpService service = HttpService.instance;
   service.initDio();
   //啟動
-  runApp(ChangeNotifierProvider(
-    create: (context) =>ViewModel(),
-    child: const MyApp()));
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (context) => MainViewModel()),
+    ChangeNotifierProvider(
+      create: (context) => AlbumViewModel(),
+    )
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -27,11 +30,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true),
       routerConfig: router,
     );
   }
 }
-
-

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/extensions/utils.dart';
 import 'package:flutter_application_1/https/api/response/api_response.dart';
-import 'package:flutter_application_1/mvvm/view_model/prew_view_view_model.dart';
+import 'package:flutter_application_1/mvvm/view_model/album_view_model.dart';
+import 'package:flutter_application_1/mvvm/view_model/main_view_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -37,10 +38,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     debugPrint(context.toString());
-    //取出共享viewModel
-    ViewModel viewModel = Provider.of<ViewModel>(context, listen: false);
     //由於整個頁面的操作都須會因為變動而更新，直接在外層夾擊Consumer負責監聽變動數據
-    return Consumer<ViewModel>(
+    return Consumer<MainViewModel>(
         builder: (context, value, child) => Scaffold(
               appBar: AppBar(
                 backgroundColor: value.isOver()
@@ -70,14 +69,19 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: () {
-                        viewModel.createAlbumData(_controller.text);
-                      },
-                      child: const Text('send createAlbumRequest'),
+                    //使用Cousumer監聽Album的變化及請求
+                    Consumer<AlbumViewModel>(
+                      builder: (context, value, child) => ElevatedButton(
+                        onPressed: () {
+                          value.createAlbumData(_controller.text);
+                        },
+                        child: const Text('send createAlbumRequest'),
+                      ),
                     ),
                     //依據請求，決定要顯示的UI
-                    getDisplayWidgetWhenSendRequest(value)
+                    Consumer<AlbumViewModel>(
+                        builder: (context, value, child) =>
+                            getDisplayWidgetWhenSendRequest(value))
                   ],
                 ),
               ),
@@ -88,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     onPressed: value.isOver()
                         ? null
                         : () {
-                            viewModel.increaseCount();
+                            value.increaseCount();
                           },
                     child: const Icon(Icons.add)),
                 const SizedBox(width: 20),
@@ -96,44 +100,43 @@ class _MyHomePageState extends State<MyHomePage> {
                     heroTag: "reset",
                     onPressed: value.isOver()
                         ? () {
-                            viewModel.resetCount();
+                            value.resetCount();
                           }
                         : null,
                     child: const Icon(Icons.refresh)),
                 const SizedBox(width: 20),
-                TextButton(
-                    style: ButtonStyle(backgroundColor: createTextBtnBgColor()),
-                    onPressed: () {
-                      if (value.isFetchSuccess()) {
-                        //下一頁須知道共享資料，故啟動頁面需進行消費
-                        context.goNamed("preview", queryParameters: {
-                          "title": value.getRequestAlbumTitle()
-                        });
-                        // context.go("/preview?title=1");
-                      }
-                      else
-                        {
+                Consumer<AlbumViewModel>(
+                    builder: (context, value, child) => TextButton(
+                        style: ButtonStyle(
+                            backgroundColor: createTextBtnBgColor()),
+                        onPressed: () {
+                          if (value.isFetchSuccess()) {
+                            //下一頁須知道共享資料，故啟動頁面需進行消費
+                            context.goNamed("preview", queryParameters: {
+                              "title": value.getRequestAlbumTitle()
+                            });
+                            // context.go("/preview?title=1");
+                          } else {
                             Fluttertoast.showToast(msg: "請先創建相簿送出才能前往下一頁");
-                        }
-                    },
-                    child: const Text(
-                      '前往下一頁',
-                    ))
+                          }
+                        },
+                        child: const Text(
+                          '前往下一頁',
+                        )))
               ]),
             ));
   }
 }
 
 //取得送出請求要顯示的UI
-Widget getDisplayWidgetWhenSendRequest(ViewModel value) {
+Widget getDisplayWidgetWhenSendRequest(AlbumViewModel value) {
   switch (value.response.status) {
-      case Status.error:
-        return const FlutterLogo();
-      case Status.initial:
-      case Status.completed:
-        return Text(value.getRequestAlbumTitle());
-      default:
-        return const CircularProgressIndicator();
-    }
-
+    case Status.error:
+      return const FlutterLogo();
+    case Status.initial:
+    case Status.completed:
+      return Text(value.getRequestAlbumTitle());
+    default:
+      return const CircularProgressIndicator();
+  }
 }
