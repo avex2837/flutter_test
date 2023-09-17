@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/extensions/utils.dart';
+import 'package:flutter_application_1/https/api/beans/album_bean.dart';
 import 'package:flutter_application_1/mvvm/view/basic/base_widget.dart';
 import 'package:flutter_application_1/mvvm/view_model/album_view_model.dart';
 import 'package:flutter_application_1/mvvm/view_model/basic_view_model.dart';
@@ -15,7 +16,7 @@ class AlbumListPage extends BasePage<AlbumViewModel> {
 }
 
 class AlbumListPageState extends BasePageState<AlbumListPage,AlbumViewModel> {
-
+  //指定當前頁面的ViewModel
   @override
   AlbumViewModel initViewModel(BuildContext context)=>AlbumViewModel(context);
 
@@ -41,9 +42,20 @@ class AlbumListPageState extends BasePageState<AlbumListPage,AlbumViewModel> {
                 itemBuilder: (BuildContext cotext, int index) {
                   //index + 前頁帶過來的字串，做為顯示標題
                   int num = index + 1;
+                  //定義標題
+                  String title = "我是標題";
+                  //定義次標題
+                  String subtitle = query;
                   //回傳標題資訊
                   return Consumer<AlbumViewModel>(
-                      builder: (context, value, child) => ListTile(
+                      builder:(context, value, child) { 
+                        if(value.isFetchSuccess())
+                        {
+                            Album? album = viewModel.getAlbum();
+                            title = album!.getId().toString();
+                            subtitle = album.getTitle();
+                        }                 
+                        return  ListTile(
                             //項目圖片
                             leading: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -58,12 +70,13 @@ class AlbumListPageState extends BasePageState<AlbumListPage,AlbumViewModel> {
                             // //項目背景
                             // tileColor: index%2==0?Colors.amber:Colors.purple,
                             //項目文字主標題
-                            title: const Text("我是標題",
-                                style: TextStyle(color: Colors.blue)),
+                            title: Text(title,
+                                style: const TextStyle(color: Colors.blue)),
                             //項目文字次標題
-                            subtitle: Text(viewModel.getRequestAlbumTitle(),
-                                style: const TextStyle(color: Colors.red)),
-                          ));
+                            subtitle: Text(subtitle,
+                                style: const TextStyle(color: Colors.red))
+                          );
+                      });
                 },
                 //定義每個item的分隔器
                 separatorBuilder: (context, index) =>

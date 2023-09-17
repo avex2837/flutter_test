@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/config/constants_value.dart';
 import 'package:flutter_application_1/https/api/basic/base_api.dart';
@@ -10,9 +12,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 ///ViewModel
 class AlbumViewModel extends PageViewModel {
   ApiResponse _apiResponse = ApiResponse.initial('Empty data');
-
+  late Album albumData;
   AlbumViewModel(super.context);
-
 
   @override
   onCreate() {
@@ -23,15 +24,18 @@ class AlbumViewModel extends PageViewModel {
   onDispose() {
     debugPrint("AlbumViewModel onDispose");
   }
-  
+
   //取得此次請求結果
   ApiResponse get response {
     return _apiResponse;
   }
+  //取得相簿
+  Album? getAlbum() {
+    return albumData;
+  }
 
   //取得請求像標題
   String getRequestAlbumTitle() {
-    if (isFetchSuccess()) {}
     switch (_apiResponse.status) {
       case Status.completed:
         {
@@ -61,8 +65,10 @@ class AlbumViewModel extends PageViewModel {
         _apiResponse = ApiResponse.completed(album);
         //將此次取得成功的資料寫入Preference
         final preferences = await SharedPreferences.getInstance();
-        preferences.setString(
-            Constants.SHARE_PREFERENCES_KEY_ALBUM, jsonMap.toString());
+        preferences.setString(Constants.SHARE_PREFERENCES_KEY_ALBUM, jsonEncode(jsonMap));
+        //取出存入Preference 的資料取出
+        var saveDataJson = preferences.getString(Constants.SHARE_PREFERENCES_KEY_ALBUM);
+        albumData = Album.fromJson(jsonDecode(saveDataJson.toString()));
         notifyListeners();
       },
       onError: (e) {
