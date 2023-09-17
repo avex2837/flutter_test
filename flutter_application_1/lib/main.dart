@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/https/http_service.dart';
-import 'package:flutter_application_1/mvvm/view_model/album_view_model.dart';
-import 'package:flutter_application_1/mvvm/view_model/main_view_model.dart';
+import 'package:flutter_application_1/mvvm/view_model/hom_view_model.dart';
 import 'package:flutter_application_1/router/routers.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
@@ -11,12 +10,9 @@ void main() {
   setUrlStrategy(PathUrlStrategy());
   HttpService service = HttpService.instance;
   service.initDio();
-  //啟動
+  //啟動(預設使用MultiProvider 去包，預備之後可能須多個共用ViewModel)
   runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (context) => MainViewModel()),
-    ChangeNotifierProvider(
-      create: (context) => AlbumViewModel(),
-    )
+    ChangeNotifierProvider(create: (context) => HomeViewModel())
   ], child: const MyApp()));
 }
 

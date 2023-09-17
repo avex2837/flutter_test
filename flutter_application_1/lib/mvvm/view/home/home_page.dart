@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/extensions/utils.dart';
 import 'package:flutter_application_1/https/api/response/api_response.dart';
 import 'package:flutter_application_1/mvvm/view_model/album_view_model.dart';
-import 'package:flutter_application_1/mvvm/view_model/main_view_model.dart';
+import 'package:flutter_application_1/mvvm/view_model/hom_view_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -16,7 +16,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final _controller = TextEditingController();
+  final _controller = TextEditingController(); //EditText元件 控制器
 
   //建立按鈕三態
   MaterialStateProperty<Color> createTextBtnBgColor() {
@@ -39,7 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     debugPrint(context.toString());
     //由於整個頁面的操作都須會因為變動而更新，直接在外層夾擊Consumer負責監聽變動數據
-    return Consumer<MainViewModel>(
+    return Consumer<HomeViewModel>(
         builder: (context, value, child) => Scaffold(
               appBar: AppBar(
                 backgroundColor: value.isOver()
@@ -69,19 +69,14 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    //使用Cousumer監聽Album的變化及請求
-                    Consumer<AlbumViewModel>(
-                      builder: (context, value, child) => ElevatedButton(
-                        onPressed: () {
-                          value.createAlbumData(_controller.text);
-                        },
-                        child: const Text('send createAlbumRequest'),
-                      ),
+                    ElevatedButton(
+                      onPressed: () {
+                        value.createAlbumData(_controller.text);
+                      },
+                      child: const Text('send createAlbumRequest'),
                     ),
                     //依據請求，決定要顯示的UI
-                    Consumer<AlbumViewModel>(
-                        builder: (context, value, child) =>
-                            getDisplayWidgetWhenSendRequest(value))
+                    getDisplayWidgetWhenSendRequest(value)
                   ],
                 ),
               ),
@@ -105,24 +100,22 @@ class _MyHomePageState extends State<MyHomePage> {
                         : null,
                     child: const Icon(Icons.refresh)),
                 const SizedBox(width: 20),
-                Consumer<AlbumViewModel>(
-                    builder: (context, value, child) => TextButton(
-                        style: ButtonStyle(
-                            backgroundColor: createTextBtnBgColor()),
-                        onPressed: () {
-                          if (value.isFetchSuccess()) {
-                            //下一頁須知道共享資料，故啟動頁面需進行消費
-                            context.goNamed("preview", queryParameters: {
-                              "title": value.getRequestAlbumTitle()
-                            });
-                            // context.go("/preview?title=1");
-                          } else {
-                            Fluttertoast.showToast(msg: "請先創建相簿送出才能前往下一頁");
-                          }
-                        },
-                        child: const Text(
-                          '前往下一頁',
-                        )))
+                TextButton(
+                    style: ButtonStyle(backgroundColor: createTextBtnBgColor()),
+                    onPressed: () {
+                      if (value.isFetchSuccess()) {
+                        //下一頁須知道共享資料，故啟動頁面需進行消費
+                        context.goNamed("preview", queryParameters: {
+                          "title": value.getRequestAlbumTitle()
+                        });
+                        // context.go("/preview?title=1");
+                      } else {
+                        Fluttertoast.showToast(msg: "請先創建相簿送出才能前往下一頁");
+                      }
+                    },
+                    child: const Text(
+                      '前往下一頁',
+                    ))
               ]),
             ));
   }

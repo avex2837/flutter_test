@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/extensions/utils.dart';
-///頁面資料
-class DataModel{
+///首頁資料
+class HomeData{
   //顏色
   String color = "#509cf6";
   //計數

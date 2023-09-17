@@ -38,47 +38,40 @@ class AlbumViewModel extends ChangeNotifier {
   }
 
   //取的相簿
-  fetchAlbumData(String title) {
+  getAlbumData(String title) {
     BaseApi apiRequest = FetchAlbumRequest(title);
-    _sendWithCallBack(apiRequest, successCallBack: (data) async {
-      final album = Album.fromJson(data);
-      //將此次取得成功的資料寫入Preference
-      final preferences = await SharedPreferences.getInstance();
-      preferences.setString(
-          Constants.SHARE_PREFERENCES_KEY_ALBUM, data.toString());
-      _apiResponse = ApiResponse.completed(album);
-      notifyListeners();
-    }, errorCallBack: (e) {
-      _apiResponse = ApiResponse.error(e.toString());
-      notifyListeners();
-    });
+    apiRequest.request(
+      onCompplete: (jsonMap) async {
+        //轉換Json to Album 物件
+        final album = Album.fromJson(jsonMap);
+        _apiResponse = ApiResponse.completed(album);
+        //將此次取得成功的資料寫入Preference
+        final preferences = await SharedPreferences.getInstance();
+        preferences.setString(
+            Constants.SHARE_PREFERENCES_KEY_ALBUM, jsonMap.toString());
+        notifyListeners();
+      },
+      onError: (e) {
+        _apiResponse = ApiResponse.error(e.toString());
+        notifyListeners();
+      },
+    );
   }
 
   //創建相簿
   createAlbumData(String title) {
     BaseApi apiRequest = CreateAlbumRequest(title);
-    _send(apiRequest);
-  }
-
-  //發送Request
-  _send(BaseApi apiRequest) async {
-    _sendWithCallBack(apiRequest, successCallBack: (data) async {
-      final album = Album.fromJson(data);
-      _apiResponse = ApiResponse.completed(album);
-      notifyListeners();
-    }, errorCallBack: (e) {
-      _apiResponse = ApiResponse.error(e.toString());
-      notifyListeners();
-    });
-  }
-
-  //發送Request
-  _sendWithCallBack(BaseApi apiRequest,
-      {required Function successCallBack,
-      required Function errorCallBack}) async {
-    _apiResponse = ApiResponse.loading('Create album data');
-    notifyListeners();
     apiRequest.request(
-        successCallBack: successCallBack, errorCallBack: errorCallBack);
+      onCompplete: (jsonMap) async {
+        //轉換Json to Album 物件
+        final album = Album.fromJson(jsonMap);
+        _apiResponse = ApiResponse.completed(album);
+        notifyListeners();
+      },
+      onError: (e) {
+        _apiResponse = ApiResponse.error(e.toString());
+        notifyListeners();
+      },
+    );
   }
 }

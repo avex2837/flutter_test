@@ -3,8 +3,12 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_application_1/https/http_service.dart';
 
-enum RequestMethod { get, post, put, delete, patch, copy }
+//定義完成 回調
+typedef OnComplete = void Function(Map<String, dynamic> jsonMap);   
+//定義失敗 回調
+typedef OnError = void Function(DioException e);   
 
+enum RequestMethod { get, post, put, delete, patch, copy }
 abstract class BaseApi {
   RequestMethod get method;
 
@@ -25,9 +29,10 @@ abstract class BaseApi {
 
   Map<String, dynamic>? get body => null;
 
+
   void request({
-    required Function successCallBack,
-    required Function errorCallBack,
+    required OnComplete onCompplete,
+    required OnError onError,
   }) async {
     HttpService service = HttpService.instance;
     Dio dio = service.dio;
@@ -82,13 +87,13 @@ abstract class BaseApi {
           break;
       }
     } on DioException catch (error) {
-      errorCallBack(service.errorFactory(error));
+      (service.errorFactory(error));
     }
     if (response != null && response.data != null) {
       String dataStr = json.encode(response.data);
       Map<String, dynamic> dataMap = json.decode(dataStr);
       dataMap = service.responseFactory(dataMap);
-      successCallBack(dataMap);
+      onCompplete(dataMap);
     }
   }
 }

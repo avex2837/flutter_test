@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/extensions/utils.dart';
 import 'package:flutter_application_1/mvvm/view_model/album_view_model.dart';
-import 'package:flutter_application_1/mvvm/view_model/main_view_model.dart';
+import 'package:flutter_application_1/mvvm/view_model/hom_view_model.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-///預覽頁，繼承BaseViewModelWidget
-class PreviewPage extends StatefulWidget {
-  const PreviewPage({super.key});
-  
+class AlbumListPage extends StatefulWidget {
+  const AlbumListPage({super.key});
+
   @override
-  State<StatefulWidget> createState()=>PreviewPageState();
+  State<StatefulWidget> createState() => AlbumListPageState();
 }
-class PreviewPageState extends State<PreviewPage>{
+
+class AlbumListPageState extends State<AlbumListPage> {
   //宣告獨立的 AlbumViewModel，不取得共享AlbumViewModel，避免變動刷新
   final AlbumViewModel albumViewModel = AlbumViewModel();
+
   @override
   void initState() {
     super.initState();
+
   }
+
   @override
   Widget build(BuildContext context) {
     //印出當前觸發build的Widget資訊
@@ -29,9 +32,11 @@ class PreviewPageState extends State<PreviewPage>{
     //取出帶入的Query
     String query = qparams.containsKey("title") ? qparams["title"] : "";
     // 等待畫面初始化完成
-    albumViewModel.fetchAlbumData(query);
-
-    return Scaffold(
+    albumViewModel.getAlbumData(query);
+    //使用變化通知Provider 包覆 並指定 當前頁面的 albumViewModel
+    return ChangeNotifierProvider(
+      create: (context) => albumViewModel,
+      child: Scaffold(
         body: Center(
             //建立列表widget
             child: ListView.separated(
@@ -40,7 +45,7 @@ class PreviewPageState extends State<PreviewPage>{
                   //index + 前頁帶過來的字串，做為顯示標題
                   int num = index + 1;
                   //回傳標題資訊
-                  return Consumer<MainViewModel>(
+                  return Consumer<AlbumViewModel>(
                       builder: (context, value, child) => ListTile(
                             //項目圖片
                             leading: Row(
@@ -68,17 +73,19 @@ class PreviewPageState extends State<PreviewPage>{
                     const Divider(color: Colors.blue),
                 //指定數量100筆
                 itemCount: 100)),
-        floatingActionButton: Consumer<MainViewModel>(
-          builder: (context, value, child) => TextButton(
-              style: ButtonStyle(backgroundColor: createTextBtnBgColor()),
-              onPressed: () {
-                //設定前頁共享的ColorModel
-                value.setColor("#FFB7DD");
-                //返回上一頁
-                context.goNamed("home");
-              },
-              child: const Text('返回上一頁')),
-        ));
+        floatingActionButton: TextButton(
+            style: ButtonStyle(backgroundColor: createTextBtnBgColor()),
+            onPressed: () {
+              //取出首頁共享數據模組
+              HomeViewModel homeViewModel = Provider.of<HomeViewModel>(context,listen: false);
+              //設定前頁共享的ColorModel
+              homeViewModel.setColor("#FFB7DD");
+              //返回上一頁
+              context.goNamed("home");
+            },
+            child: const Text('返回上一頁')),
+      ),
+    );
   }
 
   //建立按鈕點擊事件
@@ -93,5 +100,3 @@ class PreviewPageState extends State<PreviewPage>{
     });
   }
 }
-  
-

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/mvvm/view/error_screen.dart';
 import 'package:flutter_application_1/mvvm/view/home/home_page.dart';
-import 'package:flutter_application_1/mvvm/view/preview.dart';
+import 'package:flutter_application_1/mvvm/view/album_list_page.dart';
 import 'package:go_router/go_router.dart';
 //建立全域路由器，定義頁面導向邏輯
 final router = GoRouter(
@@ -22,7 +22,7 @@ final router = GoRouter(
           //定義路徑，可使用go指定路徑方式進行導向
           path: "preview",
           builder: (BuildContext context, GoRouterState state) {
-            return const PreviewPage();
+            return const AlbumListPage();
           },),
       ]
     ),
