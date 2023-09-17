@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/mvvm/model/data.dart';
 import 'package:flutter_application_1/mvvm/view_model/album_view_model.dart';
@@ -7,6 +6,19 @@ import 'package:flutter_application_1/mvvm/view_model/album_view_model.dart';
 class HomeViewModel extends AlbumViewModel {
   //資料暫存區
   final _homeData = HomeData();
+
+  HomeViewModel(super.context);
+
+  @override
+  onCreate() {
+    debugPrint("HomeViewModel onCreate");
+  }
+
+  @override
+  onDispose() {
+    debugPrint("HomeViewModel onDispose");
+  }
+
   //設定顏色
   void setColor(String value) {
     _homeData.setColor(value);
@@ -23,6 +35,7 @@ class HomeViewModel extends AlbumViewModel {
     _homeData.increaseCount();
     notifyListeners();
   }
+
   //取得次數
   int getCount() {
     return _homeData.getCount();

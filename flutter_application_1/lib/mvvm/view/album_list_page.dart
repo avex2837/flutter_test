@@ -1,26 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/extensions/utils.dart';
+import 'package:flutter_application_1/mvvm/view/basic/base_widget.dart';
 import 'package:flutter_application_1/mvvm/view_model/album_view_model.dart';
+import 'package:flutter_application_1/mvvm/view_model/basic_view_model.dart';
 import 'package:flutter_application_1/mvvm/view_model/hom_view_model.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-class AlbumListPage extends StatefulWidget {
+class AlbumListPage extends BasePage<AlbumViewModel> {
   const AlbumListPage({super.key});
 
   @override
-  State<StatefulWidget> createState() => AlbumListPageState();
+  BasePageState<BasePage<PageViewModel>, AlbumViewModel> createState() =>AlbumListPageState();
 }
 
-class AlbumListPageState extends State<AlbumListPage> {
-  //宣告獨立的 AlbumViewModel，不取得共享AlbumViewModel，避免變動刷新
-  final AlbumViewModel albumViewModel = AlbumViewModel();
+class AlbumListPageState extends BasePageState<AlbumListPage,AlbumViewModel> {
 
   @override
-  void initState() {
-    super.initState();
-
-  }
+  AlbumViewModel initViewModel(BuildContext context)=>AlbumViewModel(context);
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +29,10 @@ class AlbumListPageState extends State<AlbumListPage> {
     //取出帶入的Query
     String query = qparams.containsKey("title") ? qparams["title"] : "";
     // 等待畫面初始化完成
-    albumViewModel.getAlbumData(query);
+    viewModel.getAlbumData(query);
     //使用變化通知Provider 包覆 並指定 當前頁面的 albumViewModel
     return ChangeNotifierProvider(
-      create: (context) => albumViewModel,
+      create: (context) => viewModel,
       child: Scaffold(
         body: Center(
             //建立列表widget
@@ -64,7 +61,7 @@ class AlbumListPageState extends State<AlbumListPage> {
                             title: const Text("我是標題",
                                 style: TextStyle(color: Colors.blue)),
                             //項目文字次標題
-                            subtitle: Text(query,
+                            subtitle: Text(viewModel.getRequestAlbumTitle(),
                                 style: const TextStyle(color: Colors.red)),
                           ));
                 },
@@ -99,4 +96,6 @@ class AlbumListPageState extends State<AlbumListPage> {
       return "#FF208FF9".toColor();
     });
   }
+  
+
 }

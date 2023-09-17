@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/extensions/utils.dart';
 import 'package:flutter_application_1/https/api/response/api_response.dart';
+import 'package:flutter_application_1/mvvm/view/basic/base_widget.dart';
 import 'package:flutter_application_1/mvvm/view_model/album_view_model.dart';
+import 'package:flutter_application_1/mvvm/view_model/basic_view_model.dart';
 import 'package:flutter_application_1/mvvm/view_model/hom_view_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-class MyHomePage extends StatefulWidget {
+class MyHomePage extends BasePage<HomeViewModel> {
   final String title;
   const MyHomePage({super.key, required this.title});
 
   @override
-  State createState() => _MyHomePageState();
+  BasePageState<BasePage<PageViewModel>, HomeViewModel> createState() =>_MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends BasePageState<MyHomePage,HomeViewModel> {
   final _controller = TextEditingController(); //EditText元件 控制器
-
   //建立按鈕三態
   MaterialStateProperty<Color> createTextBtnBgColor() {
     return MaterialStateProperty.resolveWith((states) {
@@ -30,10 +31,9 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+ 
   @override
-  void initState() {
-    super.initState();
-  }
+  HomeViewModel initViewModel(BuildContext context) =>Provider.of<HomeViewModel>(context,listen: false);
 
   @override
   Widget build(BuildContext context) {
@@ -119,6 +119,8 @@ class _MyHomePageState extends State<MyHomePage> {
               ]),
             ));
   }
+  
+
 }
 
 //取得送出請求要顯示的UI

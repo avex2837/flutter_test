@@ -12,7 +12,7 @@ void main() {
   service.initDio();
   //啟動(預設使用MultiProvider 去包，預備之後可能須多個共用ViewModel)
   runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (context) => HomeViewModel())
+    ChangeNotifierProvider(create: (context) => HomeViewModel(context))
   ], child: const MyApp()));
 }
 

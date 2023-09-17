@@ -4,12 +4,26 @@ import 'package:flutter_application_1/https/api/basic/base_api.dart';
 import 'package:flutter_application_1/https/api/beans/album_bean.dart';
 import 'package:flutter_application_1/https/api/request/album_request';
 import 'package:flutter_application_1/https/api/response/api_response.dart';
+import 'package:flutter_application_1/mvvm/view_model/basic_view_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 ///ViewModel
-class AlbumViewModel extends ChangeNotifier {
+class AlbumViewModel extends PageViewModel {
   ApiResponse _apiResponse = ApiResponse.initial('Empty data');
 
+  AlbumViewModel(super.context);
+
+
+  @override
+  onCreate() {
+    debugPrint("AlbumViewModel onCreate");
+  }
+
+  @override
+  onDispose() {
+    debugPrint("AlbumViewModel onDispose");
+  }
+  
   //取得此次請求結果
   ApiResponse get response {
     return _apiResponse;
