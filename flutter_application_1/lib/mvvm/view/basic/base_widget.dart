@@ -46,7 +46,7 @@ abstract class BaseViewModelState<T extends StatefulWidget,
     viewModel = initViewModel(context);
     //延遲初始化,避免在initState中context尚未初始化完畢
     Future.delayed(Duration.zero).then((value) {
-      ///调用ViewModel的生命周期，此时可以进行一些初始化，比如网络请求等
+      ///调用ViewModel的生命周期，初始化區域
       viewModel.onCreate();
     });
   }
