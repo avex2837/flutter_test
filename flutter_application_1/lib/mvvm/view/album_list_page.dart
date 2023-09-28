@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/extensions/utils.dart';
+import 'package:flutter_application_1/extensions.dart';
 import 'package:flutter_application_1/https/api/beans/album_bean.dart';
 import 'package:flutter_application_1/mvvm/view/basic/base_widget.dart';
 import 'package:flutter_application_1/mvvm/view_model/album_view_model.dart';

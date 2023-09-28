@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/extensions/utils.dart';
+import 'package:flutter_application_1/extensions.dart';
 import 'package:flutter_application_1/https/api/response/api_response.dart';
 import 'package:flutter_application_1/mvvm/view/basic/base_widget.dart';
 import 'package:flutter_application_1/mvvm/view_model/album_view_model.dart';
 import 'package:flutter_application_1/mvvm/view_model/basic_view_model.dart';
 import 'package:flutter_application_1/mvvm/view_model/hom_view_model.dart';
+import 'package:flutter_application_1/widgets/action_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -41,12 +42,8 @@ class _MyHomePageState extends BasePageState<MyHomePage,HomeViewModel> {
     //由於整個頁面的操作都須會因為變動而更新，直接在外層夾擊Consumer負責監聽變動數據
     return Consumer<HomeViewModel>(
         builder: (context, value, child) => Scaffold(
-              appBar: AppBar(
-                backgroundColor: value.isOver()
-                    ? Colors.red
-                    : Theme.of(context).colorScheme.inversePrimary,
-                title: Text(value.isOver() ? 'Complete' : widget.title),
-              ),
+              appBar: createActionBar(),
+              extendBody: true,
               body: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -135,3 +132,13 @@ Widget getDisplayWidgetWhenSendRequest(AlbumViewModel value) {
       return const CircularProgressIndicator();
   }
 }
+
+//創建ActionBar
+AppBar createActionBar() {
+  return AppBar(
+    toolbarHeight: 100,
+    backgroundColor: const Color(0xff000b2b).withOpacity(0.6),
+    title: const QppAppBar(),
+  );
+}
+

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/mvvm/model/data.dart';
+import 'package:flutter_application_1/mvvm/model/homd_data.dart';
 import 'package:flutter_application_1/mvvm/view_model/album_view_model.dart';
 
 ///HomeViewModel 繼承AlbumViewModel 讓其持有相簿model的功能
 class HomeViewModel extends AlbumViewModel {
+  //是否開啟菜單
+  bool isLanguageDropdownMenuOpen = false;
   //資料暫存區
   final _homeData = HomeData();
 
@@ -49,4 +51,14 @@ class HomeViewModel extends AlbumViewModel {
 
   //是否超過
   bool isOver() => _homeData.isOver();
+
+
+  //切換語系選單狀態
+  toggleLanguageDropdownMenuState({bool listen = true}) {
+    isLanguageDropdownMenuOpen = !isLanguageDropdownMenuOpen;
+
+    if (listen) {
+      notifyListeners();
+    }
+  }
 }
