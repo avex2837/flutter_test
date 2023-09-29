@@ -5,38 +5,70 @@ import 'package:flutter_application_1/mvvm/view_model/hom_view_model.dart';
 import 'package:flutter_application_1/utils/tools.dart';
 import 'package:provider/provider.dart';
 
-
-AppBar qppAppBar() {
-  return AppBar(
-    toolbarHeight: 100,
-    backgroundColor: const Color(0xff000b2b).withOpacity(0.6),
-    title: const QppAppBar(),
-  );
-}
-
-class QppAppBar extends StatelessWidget {
-  const QppAppBar({super.key});
+///QPP樣式的ActionBar
+class QppActionBar extends StatelessWidget {
+  GlobalKey globalKey = GlobalKey();
+  QppActionBar({super.key});
 
   @override
   Widget build(BuildContext context) {
+    HomeViewModel viewModel = Provider.of<HomeViewModel>(context,listen: false);
     final size = MediaQuery.of(context).size;
-    final viewModel = Provider.of<HomeViewModel>(context, listen: false);
-
     return Row(
       children: [
         // 左邊間距
         spacing(size.width, 321),
+        //logo
         logo(size.width),
         // QPP -> Button 間距
         spacing(size.width, 466),
+        //橫向菜單
         menuRow(size.width),
-        languageDropdownMenu(viewModel),
+        //語系按鈕
+        languageDropdownMenu(viewModel, context),
+        PopupMenuButton(
+            //定義key，之後可以透過key取得按鈕的位置
+            // key: globalKey,
+            //選單顏色
+            color: const Color(0xff000b2b).withOpacity(0.6),
+            //按鈕的大小
+            iconSize: 20,
+            //指定按鈕圖案
+            icon: const Icon(Icons.language, color: Colors.white),
+            //指定選單跳出的位置
+            position: PopupMenuPosition.under,
+            //偏移設定
+            offset: const Offset(20, 0),
+            //選單
+            itemBuilder: (context) => Language.values
+                .map((e) => PopupMenuItem(
+                      //選單標題
+                      value: e.getDisplayValue(),
+                      //使用自訂義的Widget來監聽滑動
+                      child: OnHover(
+                        builder: (isHovered) {
+                          return Row(
+                            children: [
+                              const SizedBox(width: 10),
+                              Text(e.getDisplayValue(),
+                                  //依據是否屬標移動到當前的選項，進行對應的變色處裡
+                                  style: TextStyle(
+                                      color: isHovered
+                                          ? Colors.yellow
+                                          : Colors.white)),
+                              const SizedBox(width: 10),
+                            ],
+                          );
+                        },
+                      ),
+                    ))
+                .toList()),
       ],
     );
   }
 }
 
-extension QppAppBarTitleExtension on QppAppBar {
+extension QppAppBarTitleExtension on QppActionBar {
   // 是否為小排版
   bool isSmallTypesetting(double width) => width < 800;
 
@@ -54,7 +86,8 @@ extension QppAppBarTitleExtension on QppAppBar {
   Widget logo(double width) {
     return ConstrainedBox(
       constraints: const BoxConstraints(minWidth: 100, maxWidth: 148),
-      child: Image.asset('assets/images/desktop-pic-qpp-logo-01.png',
+      child: Image.asset(
+        'assets/images/desktop-pic-qpp-logo-01.png',
         width: getRealWidth(width, 148),
         scale: 46 / 148,
       ),
@@ -82,46 +115,42 @@ extension QppAppBarTitleExtension on QppAppBar {
           .toList(),
     );
   }
-
   /// 語系下拉選單
-  Widget languageDropdownMenu(HomeViewModel viewModel) {
-    MenuController menuController = MenuController();
-
-    // Item
+  Widget languageDropdownMenu(HomeViewModel viewModel, BuildContext context) {
     List<DropdownMenuItem<String>> items = Language.values
         .map((e) => DropdownMenuItem(
               value: e.getDisplayValue(),
-              child: Row(
-                children: [
-                  const SizedBox(width: 10),
-                  TextButton(
-                    onPressed: () {
-                      menuController.close();
-                      debugPrint(e.getDisplayValue());
-                      // viewModel.toggleLanguageDropdownMenuState();
-                    },
-                    child: Text(
-                      e.getDisplayValue(),
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                ],
+              child: OnHover(
+                builder:(isHovered) {             
+                  return Row(
+                  children: [
+                    const SizedBox(width: 10),
+                    Text(e.getDisplayValue(),
+                        style: TextStyle(
+                            color: isHovered ? Colors.yellow : Colors.white)),
+                    const SizedBox(width: 10),
+                  ],
+                );
+                },
               ),
             ))
         .toList();
 
     return MenuAnchor(
+      key: globalKey,
       builder: (context, controller, child) {
-        menuController = controller;
-        
-        return IconButton(
+        return MouseRegion(
+            onEnter: (event) => controller.open(),
+            onExit:(event) {
+              Rect rect = getWidgetGlobalRect(globalKey);
+
+            },
+            child: IconButton(
           onPressed: () {
             controller.isOpen ? controller.close() : controller.open();
-            // viewModel.toggleLanguageDropdownMenuState(listen: false);
           },
           icon: const Icon(Icons.language, color: Colors.white),
-        );
+        ));
       },
       menuChildren: items,
       style: MenuStyle(
@@ -130,16 +159,38 @@ extension QppAppBarTitleExtension on QppAppBar {
       ),
     );
   }
+}
 
-  Color getColor(Set<MaterialState> states) {
-    const Set<MaterialState> interactiveStates = <MaterialState>{
-      MaterialState.pressed,
-      MaterialState.hovered,
-      MaterialState.focused,
-    };
-    if (states.any(interactiveStates.contains)) {
-      return Colors.blue;
-    }
-    return Colors.red;
+
+///自訂義 滑動狀態改變Widget
+class OnHover extends StatefulWidget {
+  final Widget Function(bool isHovered) builder;
+
+  const OnHover({super.key, required this.builder});
+
+  @override
+  HoverState createState() => HoverState();
+}
+
+class HoverState extends State<OnHover> {
+  bool isHover = false;
+  @override
+  Widget build(BuildContext context) {
+    final hovered = Matrix4.identity()..translate(10, 0, 0);
+    final transform = isHover ? hovered : Matrix4.identity();
+    return MouseRegion(
+      onEnter: (event) => onEnter(true),
+      onExit: (event) => onEnter(false),
+      child: AnimatedContainer(
+          transform: transform,
+          duration: const Duration(milliseconds: 200),
+          child: widget.builder(isHover)),
+    );
+  }
+
+  void onEnter(bool isHover) {
+    setState(() {
+      this.isHover = isHover;
+    });
   }
 }

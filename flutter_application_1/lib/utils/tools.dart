@@ -1,3 +1,6 @@
+
+import 'package:flutter/material.dart';
+
 double getRealWidth(double screenWidth, double width) {
 //   // First get the FlutterView.
 //   FlutterView view = WidgetsBinding.instance.platformDispatcher.views.first;
@@ -13,4 +16,14 @@ double getRealWidth(double screenWidth, double width) {
 // double height = size.height;
 
   return screenWidth * width / 1980;
+}
+
+///取得Widget的位置
+Rect getWidgetGlobalRect(GlobalKey key) {
+  assert(key.currentContext != null, '');
+
+  RenderBox renderBox = key.currentContext!.findRenderObject() as RenderBox;
+  var offset = renderBox.localToGlobal(Offset.zero);
+  return Rect.fromLTWH(
+      offset.dx, offset.dy, renderBox.size.width, renderBox.size.height);
 }

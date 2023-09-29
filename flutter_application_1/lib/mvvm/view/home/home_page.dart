@@ -138,7 +138,7 @@ AppBar createActionBar() {
   return AppBar(
     toolbarHeight: 100,
     backgroundColor: const Color(0xff000b2b).withOpacity(0.6),
-    title: const QppAppBar(),
+    title:  QppActionBar(),
   );
 }
 
