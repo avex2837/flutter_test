@@ -79,46 +79,46 @@ extension QppAppBarTitleExtension on QppActionBar {
     );
   }
 
-  ///建立語系PopupMenu
-  Widget createLanguagePoupMenu() {
-    return PopupMenuButton(
-        //定義key，之後可以透過key取得按鈕的位置
-        // key: globalKey,
-        //選單顏色
-        color: const Color(0xff000b2b).withOpacity(0.6),
-        //按鈕的大小
-        iconSize: 20,
-        //指定按鈕圖案
-        icon: const Icon(Icons.language, color: Colors.white),
-        //指定選單跳出的位置
-        position: PopupMenuPosition.under,
-        //偏移設定
-        offset: const Offset(20, 0),
-        //選單
-        itemBuilder: (context) => Language.values
-            .map((e) => PopupMenuItem(
-                  //選單標題
-                  value: e.getDisplayValue(),
-                  //使用自訂義的Widget來監聽滑動
-                  child: OnHover(
-                    builder: (isHovered) {
-                      return Row(
-                        children: [
-                          const SizedBox(width: 10),
-                          Text(e.getDisplayValue(),
-                              //依據是否屬標移動到當前的選項，進行對應的變色處裡
-                              style: TextStyle(
-                                  color: isHovered
-                                      ? Colors.yellow
-                                      : Colors.white)),
-                          const SizedBox(width: 10),
-                        ],
-                      );
-                    },
-                  ),
-                ))
-            .toList());
-  }
+  // ///建立語系PopupMenu
+  // Widget createLanguagePoupMenu() {
+  //   return PopupMenuButton(
+  //       //定義key，之後可以透過key取得按鈕的位置
+  //       // key: globalKey,
+  //       //選單顏色
+  //       color: const Color(0xff000b2b).withOpacity(0.6),
+  //       //按鈕的大小
+  //       iconSize: 20,
+  //       //指定按鈕圖案
+  //       icon: const Icon(Icons.language, color: Colors.white),
+  //       //指定選單跳出的位置
+  //       position: PopupMenuPosition.under,
+  //       //偏移設定
+  //       offset: const Offset(20, 0),
+  //       //選單
+  //       itemBuilder: (context) => Language.values
+  //           .map((e) => PopupMenuItem(
+  //                 //選單標題
+  //                 value: e.getDisplayValue(),
+  //                 //使用自訂義的Widget來監聽滑動
+  //                 child: OnHover(
+  //                   builder: (isHovered) {
+  //                     return Row(
+  //                       children: [
+  //                         const SizedBox(width: 10),
+  //                         Text(e.getDisplayValue(),
+  //                             //依據是否屬標移動到當前的選項，進行對應的變色處裡
+  //                             style: TextStyle(
+  //                                 color: isHovered
+  //                                     ? Colors.yellow
+  //                                     : Colors.white)),
+  //                         const SizedBox(width: 10),
+  //                       ],
+  //                     );
+  //                   },
+  //                 ),
+  //               ))
+  //           .toList());
+  // }
 
   /// 語系下拉選單
   Widget createLanguageDropdownMenu(MenuController controller) {
@@ -126,6 +126,7 @@ extension QppAppBarTitleExtension on QppActionBar {
       controller: controller,
       builder: (context, controller, child) {
         return MouseRegion(
+            
             onEnter: (event) => controller.open(),
             onExit: (event) {
               debugPrint('onExit');
