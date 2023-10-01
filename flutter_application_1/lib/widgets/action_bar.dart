@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/enums.dart';
 import 'package:flutter_application_1/extensions.dart';
-import 'package:flutter_application_1/mvvm/view_model/hom_view_model.dart';
 import 'package:flutter_application_1/utils/tools.dart';
-import 'package:provider/provider.dart';
 
 ///QPP樣式的ActionBar
 class QppActionBar extends StatelessWidget {
   GlobalKey globalKey = GlobalKey();
+  MenuController menuController = MenuController();
   QppActionBar({super.key});
 
   @override
   Widget build(BuildContext context) {
-    HomeViewModel viewModel = Provider.of<HomeViewModel>(context,listen: false);
+    // HomeViewModel viewModel =
+    //     Provider.of<HomeViewModel>(context, listen: false);
     final size = MediaQuery.of(context).size;
     return Row(
       children: [
@@ -25,44 +25,7 @@ class QppActionBar extends StatelessWidget {
         //橫向菜單
         menuRow(size.width),
         //語系按鈕
-        languageDropdownMenu(viewModel, context),
-        PopupMenuButton(
-            //定義key，之後可以透過key取得按鈕的位置
-            // key: globalKey,
-            //選單顏色
-            color: const Color(0xff000b2b).withOpacity(0.6),
-            //按鈕的大小
-            iconSize: 20,
-            //指定按鈕圖案
-            icon: const Icon(Icons.language, color: Colors.white),
-            //指定選單跳出的位置
-            position: PopupMenuPosition.under,
-            //偏移設定
-            offset: const Offset(20, 0),
-            //選單
-            itemBuilder: (context) => Language.values
-                .map((e) => PopupMenuItem(
-                      //選單標題
-                      value: e.getDisplayValue(),
-                      //使用自訂義的Widget來監聽滑動
-                      child: OnHover(
-                        builder: (isHovered) {
-                          return Row(
-                            children: [
-                              const SizedBox(width: 10),
-                              Text(e.getDisplayValue(),
-                                  //依據是否屬標移動到當前的選項，進行對應的變色處裡
-                                  style: TextStyle(
-                                      color: isHovered
-                                          ? Colors.yellow
-                                          : Colors.white)),
-                              const SizedBox(width: 10),
-                            ],
-                          );
-                        },
-                      ),
-                    ))
-                .toList()),
+        createLanguageDropdownMenu(menuController),
       ],
     );
   }
@@ -115,44 +78,93 @@ extension QppAppBarTitleExtension on QppActionBar {
           .toList(),
     );
   }
-  /// 語系下拉選單
-  Widget languageDropdownMenu(HomeViewModel viewModel, BuildContext context) {
-    List<DropdownMenuItem<String>> items = Language.values
-        .map((e) => DropdownMenuItem(
-              value: e.getDisplayValue(),
-              child: OnHover(
-                builder:(isHovered) {             
-                  return Row(
-                  children: [
-                    const SizedBox(width: 10),
-                    Text(e.getDisplayValue(),
-                        style: TextStyle(
-                            color: isHovered ? Colors.yellow : Colors.white)),
-                    const SizedBox(width: 10),
-                  ],
-                );
-                },
-              ),
-            ))
-        .toList();
 
+  ///建立語系PopupMenu
+  Widget createLanguagePoupMenu() {
+    return PopupMenuButton(
+        //定義key，之後可以透過key取得按鈕的位置
+        // key: globalKey,
+        //選單顏色
+        color: const Color(0xff000b2b).withOpacity(0.6),
+        //按鈕的大小
+        iconSize: 20,
+        //指定按鈕圖案
+        icon: const Icon(Icons.language, color: Colors.white),
+        //指定選單跳出的位置
+        position: PopupMenuPosition.under,
+        //偏移設定
+        offset: const Offset(20, 0),
+        //選單
+        itemBuilder: (context) => Language.values
+            .map((e) => PopupMenuItem(
+                  //選單標題
+                  value: e.getDisplayValue(),
+                  //使用自訂義的Widget來監聽滑動
+                  child: OnHover(
+                    builder: (isHovered) {
+                      return Row(
+                        children: [
+                          const SizedBox(width: 10),
+                          Text(e.getDisplayValue(),
+                              //依據是否屬標移動到當前的選項，進行對應的變色處裡
+                              style: TextStyle(
+                                  color: isHovered
+                                      ? Colors.yellow
+                                      : Colors.white)),
+                          const SizedBox(width: 10),
+                        ],
+                      );
+                    },
+                  ),
+                ))
+            .toList());
+  }
+
+  /// 語系下拉選單
+  Widget createLanguageDropdownMenu(MenuController controller) {
     return MenuAnchor(
-      key: globalKey,
+      controller: controller,
       builder: (context, controller, child) {
         return MouseRegion(
             onEnter: (event) => controller.open(),
-            onExit:(event) {
-              Rect rect = getWidgetGlobalRect(globalKey);
-
+            onExit: (event) {
+              debugPrint('onExit');
+            },
+            onHover: (event) {
+              debugPrint('onHover');
             },
             child: IconButton(
-          onPressed: () {
-            controller.isOpen ? controller.close() : controller.open();
-          },
-          icon: const Icon(Icons.language, color: Colors.white),
-        ));
+              onPressed: () {
+                controller.isOpen ? controller.close() : controller.open();
+              },
+              icon: const Icon(Icons.language, color: Colors.white),
+            ));
       },
-      menuChildren: items,
+      //選項陣列
+      menuChildren: Language.values
+          .map((e) => MenuItemButton(
+                onPressed: () {
+                  debugPrint(e.getDisplayValue());
+                },
+                //使用自訂義的Widget來監聽滑動
+                child: OnHover(
+                  builder: (isHovered) {
+                    return Row(
+                      children: [
+                        const SizedBox(width: 10),
+                        Text(e.getDisplayValue(),
+                            //依據是否屬標移動到當前的選項，進行對應的變色處裡
+                            style: TextStyle(
+                                color:
+                                    isHovered ? Colors.yellow : Colors.white)),
+                        const SizedBox(width: 10),
+                      ],
+                    );
+                  },
+                ),
+              ))
+          .toList(),
+      //定義Menu的Style
       style: MenuStyle(
         backgroundColor:
             MaterialStateProperty.all(const Color(0xff000b2b).withOpacity(0.6)),
@@ -160,7 +172,6 @@ extension QppAppBarTitleExtension on QppActionBar {
     );
   }
 }
-
 
 ///自訂義 滑動狀態改變Widget
 class OnHover extends StatefulWidget {

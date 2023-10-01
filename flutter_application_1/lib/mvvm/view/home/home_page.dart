@@ -15,10 +15,11 @@ class MyHomePage extends BasePage<HomeViewModel> {
   const MyHomePage({super.key, required this.title});
 
   @override
-  BasePageState<BasePage<PageViewModel>, HomeViewModel> createState() =>_MyHomePageState();
+  BasePageState<BasePage<PageViewModel>, HomeViewModel> createState() =>
+      _MyHomePageState();
 }
 
-class _MyHomePageState extends BasePageState<MyHomePage,HomeViewModel> {
+class _MyHomePageState extends BasePageState<MyHomePage, HomeViewModel> {
   final _controller = TextEditingController(); //EditText元件 控制器
   //建立按鈕三態
   MaterialStateProperty<Color> createTextBtnBgColor() {
@@ -32,9 +33,9 @@ class _MyHomePageState extends BasePageState<MyHomePage,HomeViewModel> {
     });
   }
 
- 
   @override
-  HomeViewModel initViewModel(BuildContext context) =>Provider.of<HomeViewModel>(context,listen: false);
+  HomeViewModel initViewModel(BuildContext context) =>
+      Provider.of<HomeViewModel>(context, listen: false);
 
   @override
   Widget build(BuildContext context) {
@@ -44,39 +45,48 @@ class _MyHomePageState extends BasePageState<MyHomePage,HomeViewModel> {
         builder: (context, value, child) => Scaffold(
               appBar: createActionBar(),
               extendBody: true,
-              body: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'You have pushed the button this many times:',
-                      //顏色會於頁面跳轉返回後改變
-                      style: TextStyle(fontSize: 30, color: value.getColor()),
+              body: Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: AssetImage('assets/images/desktop_bg_kv.png')),
+                  ),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'You have pushed the button this many times:',
+                          //顏色會於頁面跳轉返回後改變
+                          style:
+                              TextStyle(fontSize: 30, color: value.getColor()),
+                        ),
+                        Text(
+                          value.getCount().toString(),
+                          style: Theme.of(context).textTheme.headlineMedium,
+                        ),
+                        SizedBox(
+                          width: 200,
+                          child: TextField(
+                            controller: _controller,
+                            decoration:
+                                const InputDecoration(hintText: 'Enter Title'),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        ElevatedButton(
+                          onPressed: () {
+                            value.createAlbumData(_controller.text);
+                          },
+                          child: const Text('send createAlbumRequest'),
+                        ),
+                        //依據請求，決定要顯示的UI
+                        getDisplayWidgetWhenSendRequest(value)
+                      ],
                     ),
-                    Text(
-                      value.getCount().toString(),
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
-                    SizedBox(
-                      width: 200,
-                      child: TextField(
-                        controller: _controller,
-                        decoration:
-                            const InputDecoration(hintText: 'Enter Title'),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: () {
-                        value.createAlbumData(_controller.text);
-                      },
-                      child: const Text('send createAlbumRequest'),
-                    ),
-                    //依據請求，決定要顯示的UI
-                    getDisplayWidgetWhenSendRequest(value)
-                  ],
-                ),
-              ),
+                  )),
               floatingActionButton:
                   Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                 FloatingActionButton(
@@ -116,8 +126,6 @@ class _MyHomePageState extends BasePageState<MyHomePage,HomeViewModel> {
               ]),
             ));
   }
-  
-
 }
 
 //取得送出請求要顯示的UI
@@ -137,8 +145,7 @@ Widget getDisplayWidgetWhenSendRequest(AlbumViewModel value) {
 AppBar createActionBar() {
   return AppBar(
     toolbarHeight: 100,
-    backgroundColor: const Color(0xff000b2b).withOpacity(0.6),
-    title:  QppActionBar(),
+    backgroundColor: const Color(0xff000b2b).withOpacity(0.9),
+    title: QppActionBar(),
   );
 }
-
